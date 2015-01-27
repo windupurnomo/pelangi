@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html ng-app="pelangi">
+
 <head>
-	<title>Pelangi</title>
+    <title>Pelangi</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="js/lib/angular.js"></script>
+    <script src="js/lib/angular-ui-router.js"></script>
+    <script src="js/local/app.js"></script>
 </head>
+
 <body>
-<h1>Hello world</h1>
+    <div class="container">
+        <h1>Hello world</h1>
+        <div ui-view></div>
+    </div>
 </body>
+
 </html>
