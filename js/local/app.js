@@ -4,7 +4,7 @@ angular.module("pelangi", ["ui.router"])
     $stateProvider
         .state('home', {
             url: '/home',
-            templateUrl: 'templates/home.html'
+            templateUrl: 'templates.home.html'
         })
         .state('list', {
             url: '/list',
