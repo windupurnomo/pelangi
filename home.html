@@ -1,9 +1,17 @@
 <div class="row">
+	<p>
+	<a ui-sref="dashboard" ng-show="token">Dashboard</a> 
+	<a ui-sref="login">Login</a> 
+	<a ui-sref="register">Register</a>
+	<a ui-sref="logout" ng-show="token">Register</a>
+	</p>
     <h3>What is ui-router?</h3>
-
     <p>URL routing is a popular approach to matching the contents of a URL to specific functionality within a web application. URL routes programmatically present specific content to users based on the URL that they are visiting. It is a popular approach that has proven to be very effective.</p>
 
     <P>Something that might not be obvious is that URL routing is also a finite state machine. When you configure the routing for an app, you are laying out the various states the application can be in, and informing the application what to display and do when a specific route is encountered.</P>
 
     <p>AngularJS supplies URL routing by default. It is adequate, but also has some limitations.</p>
+
+    <pre>{{token | json}}</pre>
+    <pre>{{test | json}}</pre>
 </div>

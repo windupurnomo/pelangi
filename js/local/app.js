@@ -1,45 +1,57 @@
-angular.module("pelangi", ["ui.router"])
+var app = angular.module("pelangi", ["ui.router", "ngStorage"]);
 
-.config(function($stateProvider, $urlRouterProvider) {
+app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
     $stateProvider
         .state('home', {
             url: '/home',
-            templateUrl: 'templates.home.html'
-        })
-        .state('list', {
+            templateUrl: 'home.html',
+            controller: function ($scope, $localStorage){
+                alert($localStorage.token);
+                $scope.token = $localStorage.token;
+            }
+        }).state('login', {
+            url: '/login',
+            templateUrl: 'login.html',
+            controller: 'authController'
+        }).state('register', {
+            url: '/register',
+            templateUrl: 'register.html',
+            controller: 'authController'
+        }).state('dashboard', {
+            url: '/dashboard',
+            templateUrl: 'dashboard.html'
+        }).state('list', {
             url: '/list',
             templateUrl: 'templates/list.html',
             controller: 'ListCtrl'
-        })
-        .state('list.item', {
+        }).state('list.item', {
             url: '/:item',
             templateUrl: 'templates/list.item.html',
             controller: function($scope, $stateParams) {
                 $scope.item = $stateParams.item;
             }
         })
+
     $urlRouterProvider.otherwise('/home');
-})
 
-.controller("ListCtrl", function($scope) {
-    $scope.shoppingList = [{
-        name: 'Milk'
-    }, {
-        name: 'Eggs'
-    }, {
-        name: 'Bread'
-    }, {
-        name: 'Cheese'
-    }, {
-        name: 'Ham'
-    }];
+    $httpProvider.interceptors.push(['$q', '$location', '$localStorage',
+        function($q, $location, $localStorage) {
+            return {
+                'request': function(config) {
+                    config.headers = config.headers || {};
+                    if ($localStorage.token) {
+                        config.headers.Authorization = 'Bearer ' + $localStorage.token;
+                    }
+                    return config;
+                },
+                'responseError': function(response) {
+                    if (response.status === 401 || response.status === 403) {
+                        $location.path('/signin');
+                    }
+                    return $q.reject(response);
+                }
+            };
+        }
+    ]);
 
-    $scope.selectItem = function(selectedItem) {
-        _($scope.shoppingList).each(function(item) {
-            item.selected = false;
-            if (selectedItem === item) {
-                selectedItem.selected = true;
-            }
-        });
-    };
-})
+});
