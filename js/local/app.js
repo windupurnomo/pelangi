@@ -1,30 +1,37 @@
-var app = angular.module("pelangi", ["ui.router", "ngStorage"]);
+var app = angular.module("pelangi", ["ui.router", "LocalStorageModule"]);
 
 app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
     $stateProvider
         .state('home', {
             url: '/home',
-            templateUrl: 'home.html',
-            controller: function ($scope, $localStorage){
-                alert($localStorage.token);
-                $scope.token = $localStorage.token;
-            }
-        }).state('login', {
+            templateUrl: 'templates/home.html',
+            controller: 'authController'
+        })
+
+        .state('login', {
             url: '/login',
-            templateUrl: 'login.html',
+            templateUrl: 'templates/login.html',
             controller: 'authController'
-        }).state('register', {
+        })
+
+        .state('register', {
             url: '/register',
-            templateUrl: 'register.html',
+            templateUrl: 'templates/register.html',
             controller: 'authController'
-        }).state('dashboard', {
+        })
+
+        .state('dashboard', {
             url: '/dashboard',
-            templateUrl: 'dashboard.html'
-        }).state('list', {
+            templateUrl: 'templates/dashboard.html'
+        })
+
+        .state('list', {
             url: '/list',
             templateUrl: 'templates/list.html',
             controller: 'ListCtrl'
-        }).state('list.item', {
+        })
+
+        .state('list.item', {
             url: '/:item',
             templateUrl: 'templates/list.item.html',
             controller: function($scope, $stateParams) {
@@ -34,24 +41,22 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
     $urlRouterProvider.otherwise('/home');
 
-    $httpProvider.interceptors.push(['$q', '$location', '$localStorage',
-        function($q, $location, $localStorage) {
-            return {
-                'request': function(config) {
-                    config.headers = config.headers || {};
-                    if ($localStorage.token) {
-                        config.headers.Authorization = 'Bearer ' + $localStorage.token;
-                    }
-                    return config;
-                },
-                'responseError': function(response) {
-                    if (response.status === 401 || response.status === 403) {
-                        $location.path('/signin');
-                    }
-                    return $q.reject(response);
+    $httpProvider.interceptors.push(function($q, $location, localStorageService) {
+        return {
+            'request': function(config) {
+                config.headers = config.headers || {};
+                if (localStorageService.get('token')) {
+                    config.headers.Authorization = 'Bearer ' + localStorageService.get('token');
                 }
-            };
-        }
-    ]);
+                return config;
+            },
+            'responseError': function(response) {
+                if (response.status === 401 || response.status === 403) {
+                    $location.path('/signin');
+                }
+                return $q.reject(response);
+            }
+        };
+    });
 
 });

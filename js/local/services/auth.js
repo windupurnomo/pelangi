@@ -1,5 +1,5 @@
-app.factory('Main', ['$http', '$localStorage',
-    function($http, $localStorage) {
+app.factory('Main',
+    function($http, localStorageService) {
         var baseUrl = "http://localhost:3002";
 
         function changeUser(user) {
@@ -24,9 +24,9 @@ app.factory('Main', ['$http', '$localStorage',
         }
 
         function getUserFromToken() {
-            var token = $localStorage.token;
+            var token = localStorageService.get('token');
             var user = {};
-            if (typeof token !== 'undefined') {
+            if (token != null) {
                 var encoded = token.split('.')[1];
                 user = JSON.parse(urlBase64Decode(encoded));
             }
@@ -47,9 +47,9 @@ app.factory('Main', ['$http', '$localStorage',
             },
             logout: function(success) {
                 changeUser({});
-                delete $localStorage.token;
+                localStorageService.remove('token');
                 success();
             }
         };
     }
-]);
+);

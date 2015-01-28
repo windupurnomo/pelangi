@@ -1,6 +1,5 @@
-app.controller('authController', function($rootScope, $scope, $location, $localStorage, Main) {
-    $scope.token = $localStorage.token;
-    $scope.test = "test";
+app.controller('authController', function($rootScope, $scope, $location, localStorageService, Main) {
+    $scope.token = getToken();
 
     $scope.signin = function() {
         var formData = {
@@ -12,9 +11,7 @@ app.controller('authController', function($rootScope, $scope, $location, $localS
             if (res.type == false) {
                 alert(res.data)
             } else {
-                $localStorage.token = res.data.token;
-                $scope.token = res.data.token;
-                $scope.test = 'success';
+                saveToken(res.data.token);
                 window.location = "/";
             }
         }, function() {
@@ -33,7 +30,7 @@ app.controller('authController', function($rootScope, $scope, $location, $localS
             if (res.type == false) {
                 alert(res.data)
             } else {
-                $localStorage.token = res.data.token;
+                saveToken(res.data.token);
                 window.location = "#/login"
             }
         }, function() {
@@ -56,4 +53,13 @@ app.controller('authController', function($rootScope, $scope, $location, $localS
             alert("Failed to logout!");
         });
     };
+
+    function saveToken(val){
+        localStorageService.set('token', val);
+        $scope.token = val;
+    }
+
+    function getToken(){
+        return localStorageService.get('token');
+    }
 });
