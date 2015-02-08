@@ -1,6 +1,6 @@
 app.factory('Main',
     function($http, localStorageService) {
-        var baseUrl = "http://localhost:3002/api";
+        var baseUrl = "http://ec2-54-152-244-35.compute-1.amazonaws.com:9000/api";
 
         function changeUser(user) {
             angular.extend(currentUser, user);
