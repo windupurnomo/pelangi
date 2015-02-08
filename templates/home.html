@@ -1,8 +1,8 @@
 <div class="row">
     <p>
-        <a ui-sref="dashboard" ng-show="token">Dashboard</a>
-        <a ui-sref="login">Login</a>
-        <a ui-sref="register">Register</a>
+        <a ui-sref="dashboard.home" ng-show="token">Dashboard</a>
+        <a ui-sref="login" ng-hide="token">Login</a>
+        <a ui-sref="register" ng-hide="token">Register</a>
         <a ui-sref="logout" ng-show="token" ng-click="logout()">Logout</a>
     </p>
     <h3>What is ui-router?</h3>

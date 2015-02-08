@@ -1,0 +1,17 @@
+<div ng-controller="adminCtrl">
+<h1>User Management</h1>
+<table class="table">
+<tr>
+	<td>No</td>
+	<td>Email</td>
+	<td>Username</td>
+	<td>Action</td>
+</tr>
+<tr ng-repeat="u in users" ng-if="u.email != user.email">
+	<td>{{$index+1}}</td>
+	<td>{{u.email}}</td>
+	<td>{{u.username}}</td>
+	<td>disabled</td>
+</tr>
+</table>
+</div>

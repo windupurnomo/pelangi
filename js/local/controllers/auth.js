@@ -7,16 +7,19 @@ app.controller('authController', function($rootScope, $scope, $location, localSt
             password: $scope.password
         }
 
-        Main.signin(formData, function(res) {
-            if (res.type == false) {
-                alert(res.data)
-            } else {
-                saveToken(res.data.token);
-                window.location = "/";
-            }
-        }, function() {
-            $rootScope.error = 'Failed to signin';
-        })
+        Main.signin(formData,
+            function(res) {
+                if (res.status == false) {
+                    alert(res.message);
+                } else {
+                    saveToken(res.data.token);
+                    window.location = "/";
+                }
+            }, function(res) {
+                console.log(res.message);
+                $rootScope.error = 'Failed to signin';
+                //window.location = "/login";
+            })
     };
 
     $scope.signup = function() {
@@ -24,27 +27,43 @@ app.controller('authController', function($rootScope, $scope, $location, localSt
             email: $scope.email,
             password: $scope.password
         }
-        console.log(formData);
 
         Main.save(formData, function(res) {
             if (res.type == false) {
                 alert(res.data)
             } else {
                 saveToken(res.data.token);
-                window.location = "#/login"
+                window.location = "#/activation"
             }
         }, function() {
             $rootScope.error = 'Failed to signup';
         })
     };
 
-    $scope.me = function() {
-        Main.me(function(res) {
-            $scope.myDetails = res;
+    $scope.activate = function() {
+        var formData = {
+            email: $scope.email,
+            activationCode: $scope.activationCode
+        }
+
+        Main.activate(formData, function(res) {
+            if (res.status == false) {
+                alert(res.message)
+            } else {
+                saveToken(res.data.token);
+                window.location = "#/login"
+            }
         }, function() {
-            $rootScope.error = 'Failed to fetch details';
+            alert('Failed to activate account');
+            $rootScope.error = 'Failed to activate account';
         })
     };
+
+    $scope.resend = function(){
+        var formData = {
+            
+        }
+    }
 
     $scope.logout = function() {
         Main.logout(function() {
@@ -54,12 +73,12 @@ app.controller('authController', function($rootScope, $scope, $location, localSt
         });
     };
 
-    function saveToken(val){
+    function saveToken(val) {
         localStorageService.set('token', val);
         $scope.token = val;
     }
 
-    function getToken(){
+    function getToken() {
         return localStorageService.get('token');
     }
 });
