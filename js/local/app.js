@@ -1,26 +1,42 @@
-var app = angular.module("pelangi", ["ui.router", "LocalStorageModule"]);
+var app = angular.module("pelangi", ['ngAnimate', 'toaster', "ui.router", "LocalStorageModule"]);
 
 app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
     $stateProvider
         .state('home', {
             url: '/',
+            abstract: true,
             templateUrl: 'templates/home.html',
             controller: 'authController'
         })
 
-        .state('login', {
+        .state('home.home', {
+            url: '',
+            templateUrl: 'templates/home2.html'
+        })
+
+        .state('home.about', {
+            url: '/about',
+            templateUrl: 'templates/about.html'
+        })
+
+        .state('home.contact', {
+            url: '/contact',
+            templateUrl: 'templates/contact.html'
+        })
+
+        .state('home.login', {
             url: '/login',
             templateUrl: 'templates/login.html',
             controller: 'authController'
         })
 
-        .state('register', {
+        .state('home.register', {
             url: '/register',
             templateUrl: 'templates/register.html',
             controller: 'authController'
         })
 
-        .state('activation', {
+        .state('home.activation', {
             url: '/activation',
             templateUrl: 'templates/activation.html',
             controller: 'authController'
@@ -36,17 +52,12 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: 'templates/dashboardhome.html'
         })
 
-        .state('dashboard.profile', {
+        .state('profile', {
             url: '/profile',
             templateUrl: 'templates/profile.html'
         })
-
-        .state('dashboard.changepass', {
-            url: '/changepass',
-            templateUrl: 'templates/changepass.html'
-        })
-
-        .state('dashboard.usermag', {
+        
+        .state('usermag', {
             url: '/usermag',
             templateUrl: 'templates/usermag.html'
         })
@@ -71,8 +82,10 @@ app.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
         return {
             'request': function(config) {
                 config.headers = config.headers || {};
-                if (localStorageService.get('token')) {
-                    config.headers.Authorization = 'Bearer ' + localStorageService.get('token');
+                var user = localStorageService.get('user');
+                var token = user == null ? null : user.token;
+                if (token) {
+                    config.headers.Authorization = 'Bearer ' + token;
                 }
                 return config;
             },

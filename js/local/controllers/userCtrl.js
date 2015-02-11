@@ -1,4 +1,4 @@
-app.controller('dashboardCtrl', function($rootScope, $scope, $location, Main) {
+app.controller('userCtrl', function($scope, toaster, Main, localStorageService) {
     Main.me(function(res) {
         $scope.user = res.data;
     }, function() {
@@ -9,15 +9,14 @@ app.controller('dashboardCtrl', function($rootScope, $scope, $location, Main) {
         Main.saveUser($scope.user,
             function(res) {
                 if (!res.status) {
-                    alert(res.message);
+                    toaster.pop('error', "Update Profile", res.message);
                 } else {
-                	console.log(res.data);
+                    saveUser(res.data);
+                    toaster.pop('success', "Update Profile", "Berhasil update profile");
                 }
             }, function(res) {
-                console.log(res.message);
-                $rootScope.error = 'Failed to saveUser';
-                //window.location = "/login";
-            })
+                toaster.pop('error', "Ubah Profile", res.message);
+            });
     }
 
     $scope.changepass = function (){
@@ -29,14 +28,22 @@ app.controller('dashboardCtrl', function($rootScope, $scope, $location, Main) {
         Main.changepass(formData, 
             function (res){
                 if(res.status){
-                    alert('success change password');
-                    window.location = "#/dashboard/home"
+                    toaster.pop('success', "Ubah Password", "Berhasil mengubah password");
                 }else
-                    alert(res.message);
+                    toaster.pop('error', "Ubah Password", res.message);
             }, 
             function (res){
                 alert(res);
             }
         );
+    }
+
+    function saveUser(val) {
+        localStorageService.set('user', val);
+        $scope.user = val;
+    }
+
+    function getUser() {
+        return localStorageService.get('user');
     }
 });

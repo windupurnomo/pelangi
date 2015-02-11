@@ -1,5 +1,6 @@
-app.controller('authController', function($rootScope, $scope, $location, localStorageService, Main) {
-    $scope.token = getToken();
+app.controller('authController', function($scope, $location, localStorageService, Main, toaster) {
+    $scope.user = getUser();
+    $scope.token = $scope.user == null ? null : $scope.user.token;
 
     $scope.signin = function() {
         var formData = {
@@ -12,12 +13,12 @@ app.controller('authController', function($rootScope, $scope, $location, localSt
                 if (res.status == false) {
                     alert(res.message);
                 } else {
-                    saveToken(res.data.token);
+                    //saveToken(res.data.token);
+                    saveUser(res.data);
                     window.location = "/";
                 }
             }, function(res) {
                 console.log(res.message);
-                $rootScope.error = 'Failed to signin';
                 //window.location = "/login";
             })
     };
@@ -36,7 +37,7 @@ app.controller('authController', function($rootScope, $scope, $location, localSt
                 window.location = "#/activation"
             }
         }, function() {
-            $rootScope.error = 'Failed to signup';
+            // $rootScope.error = 'Failed to signup';
         })
     };
 
@@ -55,7 +56,6 @@ app.controller('authController', function($rootScope, $scope, $location, localSt
             }
         }, function() {
             alert('Failed to activate account');
-            $rootScope.error = 'Failed to activate account';
         })
     };
 
@@ -73,12 +73,12 @@ app.controller('authController', function($rootScope, $scope, $location, localSt
         });
     };
 
-    function saveToken(val) {
-        localStorageService.set('token', val);
-        $scope.token = val;
+    function saveUser(val) {
+        localStorageService.set('user', val);
+        $scope.user = val;
     }
 
-    function getToken() {
-        return localStorageService.get('token');
+    function getUser() {
+        return localStorageService.get('user');
     }
 });

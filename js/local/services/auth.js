@@ -1,6 +1,7 @@
 app.factory('Main',
     function($http, localStorageService) {
-        var baseUrl = "http://ec2-54-152-244-35.compute-1.amazonaws.com:9000/api";
+        // var baseUrl = "http://ec2-54-152-244-35.compute-1.amazonaws.com:9000/api";
+        var baseUrl = "http://localhost:3002/api";
 
         function changeUser(user) {
             angular.extend(currentUser, user);
@@ -56,11 +57,14 @@ app.factory('Main',
             },
             logout: function(success) {
                 changeUser({});
-                localStorageService.remove('token');
+                localStorageService.remove('user');
                 success();
             },
             changepass: function (data, success, error){
                 $http.post(baseUrl + '/changepass', data).success(success).error(error);
+            },
+            disable: function (data, success, error){
+                $http.post(baseUrl + '/user/disable/', data).success(success).error(error)
             }
         };
     }
